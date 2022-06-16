@@ -213,7 +213,6 @@ def gen_address(generator, contains,
     sumlen += len(contains)
 
     count = 0
-    number_addresses = 50000
     if number_threads == 0:
         count_addresses = 1
         for i in range(sumlen):
@@ -301,6 +300,7 @@ def gen_address(generator, contains,
                         print(f"Started at {started}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
 
+number_addresses = 0
 
 if __name__ == '__main__':
     import argparse
@@ -332,6 +332,8 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--file', dest='file', default="", help='Output file')
     parser.add_argument('-a', '--address', dest='address', default="ARL", help='address type, TDC or ARL')
 
+
+
     procs = []
     options = parser.parse_args(sys.argv[1:])
 
@@ -341,12 +343,15 @@ if __name__ == '__main__':
         if options.started:
             if options.started[0] != "T":
                 options.started = "T" + options.started
+        number_addresses = 5000
     else:
         generator = generate_keypair_random_arl
         little_bytes = little_bytes_arl
         if options.started:
             if options.started[0] != "A":
                 options.started = "A" + options.started
+
+        number_addresses = 50000
 
     if options.started:
         options.started = options.started[0] + options.started[1].upper() + options.started[2:]

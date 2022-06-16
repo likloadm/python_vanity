@@ -1,2 +1,6 @@
 .idea
 venv
+main.spec
+build
+dist
+venv2

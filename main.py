@@ -307,6 +307,7 @@ def gen_address(generator, contains,
 
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     import argparse
     import sys
 

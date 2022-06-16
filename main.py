@@ -347,7 +347,7 @@ if __name__ == '__main__':
         if options.started:
             if options.started[0] != "T":
                 options.started = "T" + options.started
-        number_addresses = 5000
+        number_addresses = 500
     else:
         generator = generate_keypair_random_arl
         little_bytes = little_bytes_arl

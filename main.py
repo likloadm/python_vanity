@@ -136,6 +136,10 @@ BITCOIN_ALPHABET = \
 BITCOIN_ALPHABET_STR = \
     '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
+
+number_addresses = 0
+
+
 def scrub_input(v):
     if isinstance(v, str):
         v = v.encode('ascii')
@@ -201,7 +205,8 @@ def gen_address(generator, contains,
                 started, file,
                 little_bytes,
                 threads_count,
-                number_threads):
+                number_threads,
+                number_addresses):
     started_len = len(started)
     started = bytes(started, "UTF-8")
     contains = bytes(contains, "UTF-8")
@@ -300,7 +305,6 @@ def gen_address(generator, contains,
                         print(f"Started at {started}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
 
-number_addresses = 0
 
 if __name__ == '__main__':
     import argparse
@@ -377,7 +381,8 @@ if __name__ == '__main__':
                                                                  options.started, options.file,
                                                                  little_bytes,
                                                                  int(options.threads),
-                                                                 number))
+                                                                 number,
+                                                                 number_addresses))
         procs.append(proc)
         proc.start()
 

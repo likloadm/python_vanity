@@ -184,7 +184,8 @@ little_bytes_tdc = 0x41.to_bytes(1, "little")
 
 
 def gen_user_date_string(seconds):
-    return time.strftime("%d days %H hours %M months %S seconds", time.gmtime(int(seconds)))
+    days = int(seconds)//(3600*24)
+    return time.strftime(f"{days} days %H hours %M months %S seconds", time.gmtime(int(seconds)))
 
 
 def get_search_speed(count, threads_count, start_time, count_addresses):

@@ -1,0 +1,1 @@
+python3 main.py -a TDC -s TYMAH

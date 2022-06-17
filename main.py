@@ -189,7 +189,7 @@ little_bytes_tdc = 0x41.to_bytes(1, "little")
 
 def gen_user_date_string(seconds):
     days = int(seconds)//(3600*24)
-    return time.strftime(f"{days} days %H hours %M months %S seconds", time.gmtime(int(seconds)))
+    return time.strftime(f"{days} days %H hours %M minutes %S seconds", time.gmtime(int(seconds)))
 
 
 def get_search_speed(count, threads_count, start_time, count_addresses):
@@ -229,8 +229,9 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address and started == address[:started_len]:
                     if file:
+                        print("New address found")
                         with open(f"{file}", "a") as f:
-                            f.write(f"{address}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
+                            f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
                         print(f"Started at {started} and Contains {contains}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
@@ -245,8 +246,9 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address:
                     if file:
+                        print("New address found")
                         with open(f"{file}", "a") as f:
-                            f.write(f"{address}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
+                            f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
                         print(f"Contains {contains}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
@@ -261,8 +263,9 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if started == address[:started_len]:
                     if file:
+                        print("New address found")
                         with open(f"{file}", "a") as f:
-                            f.write(f"{address}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
+                            f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
                         print(f"Started at {started}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
@@ -277,8 +280,9 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address and started == address[:started_len]:
                     if file:
+                        print("New address found")
                         with open(f"{file}", "a") as f:
-                            f.write(f"{address}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
+                            f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
                         print(f"Started at {started} and Contains {contains}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
@@ -288,8 +292,9 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address:
                     if file:
+                        print("New address found")
                         with open(f"{file}", "a") as f:
-                            f.write(f"{address}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
+                            f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
                         print(f"Contains {contains}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
@@ -299,8 +304,9 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if started == address[:started_len]:
                     if file:
+                        print("New address found")
                         with open(f"{file}", "a") as f:
-                            f.write(f"{address}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
+                            f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
                         print(f"Started at {started}", address,
                               bin_to_b58check(secret_key + little_bytes_01 + public_key, 125))
@@ -386,6 +392,8 @@ if __name__ == '__main__':
                                                                  number_addresses))
         procs.append(proc)
         proc.start()
+
+    print(f"Start find address started at {options.started} and contains {options.contains}")
 
     for proc in procs:
         proc.join()

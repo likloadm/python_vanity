@@ -322,12 +322,6 @@ if __name__ == '__main__':
               "consider supporting its future development via " \
               "donating to one of the addresses indicated in the " \
               "README.md file\n\n" \
-              "PARAMS:\n" \
-              "-a address type, TDC or ARL\n" \
-              "-s what should the address start with\n" \
-              "-c what should be in the address\n" \
-              "-t the number of threads involved in the search (your number cores by default)\n" \
-              "-f output file(writes to console by default)\n"
 
     print(message)
 
@@ -335,13 +329,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=message)
 
     parser.add_argument('-s', '-started', dest='started', default="",
-                        help='Start address')
+                        help='What should the address start with, for example, TYMAN for the Tidecoin or AREL for the Arielcoin')
     parser.add_argument('-с', '-contains', dest='contains', default="",
-                        help='Сontains')
-    parser.add_argument('-t', '--threads', dest='threads', default=cpu_count, help='Сount threads',
+                        help='What should be in the address')
+    parser.add_argument('-t', '--threads', dest='threads', default=cpu_count, help='The number of threads involved in the search (your number cores by default)',
                         metavar="THREADS")
     parser.add_argument('-f', '--file', dest='file', default="", help='Output file')
-    parser.add_argument('-a', '--address', dest='address', default="ARL", help='address type, TDC or ARL')
+    parser.add_argument('-a', '--address', dest='address', default="ARL", help='address type, TDC or ARL', required=True)
 
 
 
@@ -371,17 +365,17 @@ if __name__ == '__main__':
             if char not in BITCOIN_ALPHABET_STR:
                 print(f"Invalid character {char}, list of allowed characters:\n"
                       f"{BITCOIN_ALPHABET_STR}")
-                raise Exception
+                quit()
 
     for char in options.contains:
         if char not in BITCOIN_ALPHABET_STR:
             print(f"Invalid character {char}, list of allowed characters:\n"
                   f"{BITCOIN_ALPHABET_STR}")
-            raise Exception
+            quit()
 
     if not options.contains and not options.started:
-        print("Error! Сontains or started must be filled")
-        raise Exception
+        print("Error! Сontains (-c) or started (-s) must be filled")
+        quit()
 
     for number in range(int(options.threads)):
         proc = multiprocessing.Process(target=gen_address, args=(generator, options.contains,

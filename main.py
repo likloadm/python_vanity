@@ -44,7 +44,7 @@ def decode(string, base):
     code_string = get_code_string(base)
     result = 0
     if base == 256:
-        def extract(d, cs):
+        def extract(d):
             return d
     else:
         def extract(d, cs):
@@ -79,7 +79,7 @@ def encode(val, base, minlen=0):
 
     padding_element = b'\x00' if base == 256 else b'1' \
         if base == 58 else b'0'
-    if (pad_size > 0):
+    if pad_size > 0:
         result_bytes = padding_element * pad_size + result_bytes
 
     result_string = ''.join([chr(y) for y in result_bytes])
@@ -146,7 +146,7 @@ def scrub_input(v):
     return v
 
 
-def b58encode_int(i, default_one= True, alphabet = BITCOIN_ALPHABET):
+def b58encode_int(i, default_one=True, alphabet=BITCOIN_ALPHABET):
     """
     Encode an integer using Base58
     """
@@ -161,7 +161,7 @@ def b58encode_int(i, default_one= True, alphabet = BITCOIN_ALPHABET):
 
 
 def b58encode(
-    v, alphabet= BITCOIN_ALPHABET
+    v, alphabet=BITCOIN_ALPHABET
 ):
     """
     Encode a string using Base58
@@ -322,7 +322,7 @@ if __name__ == '__main__':
               "consider supporting its future development via " \
               "donating to one of the addresses indicated in the " \
               "README.md file\n\n" \
-              "Use argument -h to get the help message." \
+              "Use argument -h to get the help message.\n" \
 
     print(message)
 
@@ -375,7 +375,7 @@ if __name__ == '__main__':
             quit()
 
     if not options.contains and not options.started:
-        print("Error! Сontains (-c) or started (-s) must be filled")
+        print("Error! Arguments contains (-c) or started (-s) must be filled")
         quit()
 
     for number in range(int(options.threads)):
@@ -388,7 +388,12 @@ if __name__ == '__main__':
         procs.append(proc)
         proc.start()
 
-    print(f"Start find address started at {options.started} and contains {options.contains}")
+    if options.contains and not options.started:
+        print(f"Started search for an address containing {options.contains}")
+    elif not options.contains and options.started:
+        print(f"Started search for an address starting at {options.started}")
+    else:
+        print(f"Started search for an address starting at {options.started} and containing {options.contains}")
 
     for proc in procs:
         proc.join()

@@ -44,7 +44,7 @@ def decode(string, base):
     code_string = get_code_string(base)
     result = 0
     if base == 256:
-        def extract(d, cs):
+        def extract(d):
             return d
     else:
         def extract(d, cs):
@@ -79,7 +79,7 @@ def encode(val, base, minlen=0):
 
     padding_element = b'\x00' if base == 256 else b'1' \
         if base == 58 else b'0'
-    if (pad_size > 0):
+    if pad_size > 0:
         result_bytes = padding_element * pad_size + result_bytes
 
     result_string = ''.join([chr(y) for y in result_bytes])
@@ -146,7 +146,7 @@ def scrub_input(v):
     return v
 
 
-def b58encode_int(i, default_one= True, alphabet = BITCOIN_ALPHABET):
+def b58encode_int(i, default_one=True, alphabet=BITCOIN_ALPHABET):
     """
     Encode an integer using Base58
     """
@@ -161,7 +161,7 @@ def b58encode_int(i, default_one= True, alphabet = BITCOIN_ALPHABET):
 
 
 def b58encode(
-    v, alphabet= BITCOIN_ALPHABET
+    v, alphabet=BITCOIN_ALPHABET
 ):
     """
     Encode a string using Base58
@@ -322,26 +322,21 @@ if __name__ == '__main__':
               "consider supporting its future development via " \
               "donating to one of the addresses indicated in the " \
               "README.md file\n\n" \
-              "PARAMS:\n" \
-              "-a address type, TDC or ARL\n" \
-              "-s what should the address start with\n" \
-              "-c what should be in the address\n" \
-              "-t the number of threads involved in the search (your number cores by default)\n" \
-              "-f output file(writes to console by default)\n"
+              "Use argument -h to get the help message.\n" \
 
     print(message)
 
     cpu_count = multiprocessing.cpu_count()
     parser = argparse.ArgumentParser(description=message)
 
-    parser.add_argument('-s', '-started', dest='started', default="",
-                        help='Start address')
-    parser.add_argument('-с', '-contains', dest='contains', default="",
-                        help='Сontains')
-    parser.add_argument('-t', '--threads', dest='threads', default=cpu_count, help='Сount threads',
+    parser.add_argument('-s', '--started', dest='started', default="",
+                        help='What should the address start with, for example, TYMAN for the Tidecoin or AREL for the Arielcoin')
+    parser.add_argument('-c', '--contains', dest='contains', default="",
+                        help='What should be in the address')
+    parser.add_argument('-t', '--threads', dest='threads', default=cpu_count, help='The number of threads involved in the search (your number cores by default)',
                         metavar="THREADS")
     parser.add_argument('-f', '--file', dest='file', default="", help='Output file')
-    parser.add_argument('-a', '--address', dest='address', default="ARL", help='address type, TDC or ARL')
+    parser.add_argument('-a', '--address', dest='address', default="", help='Address type, can be TDC or ARL', required=True)
 
 
 
@@ -371,17 +366,17 @@ if __name__ == '__main__':
             if char not in BITCOIN_ALPHABET_STR:
                 print(f"Invalid character {char}, list of allowed characters:\n"
                       f"{BITCOIN_ALPHABET_STR}")
-                raise Exception
+                quit()
 
     for char in options.contains:
         if char not in BITCOIN_ALPHABET_STR:
             print(f"Invalid character {char}, list of allowed characters:\n"
                   f"{BITCOIN_ALPHABET_STR}")
-            raise Exception
+            quit()
 
     if not options.contains and not options.started:
-        print("Error! Сontains or started must be filled")
-        raise Exception
+        print("Error! Arguments contains (-c) or started (-s) must be filled")
+        quit()
 
     for number in range(int(options.threads)):
         proc = multiprocessing.Process(target=gen_address, args=(generator, options.contains,
@@ -393,7 +388,12 @@ if __name__ == '__main__':
         procs.append(proc)
         proc.start()
 
-    print(f"Start find address started at {options.started} and contains {options.contains}")
+    if options.contains and not options.started:
+        print(f"Started search for an address containing {options.contains}")
+    elif not options.contains and options.started:
+        print(f"Started search for an address starting at {options.started}")
+    else:
+        print(f"Started search for an address starting at {options.started} and containing {options.contains}")
 
     for proc in procs:
         proc.join()

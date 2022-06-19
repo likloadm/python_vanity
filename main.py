@@ -361,8 +361,7 @@ if __name__ == '__main__':
                 options.started = "A" + options.started
         number_addresses = 50000
     else:
-        print(Fore.RED + "Address type should be Tidecoin (TDC) or Arielcoin (ARL)")
-        quit()
+        raise argparse.ArgumentTypeError("Address type should be Tidecoin (TDC) or Arielcoin (ARL)")
 
 
     if options.started:

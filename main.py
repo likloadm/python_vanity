@@ -44,7 +44,7 @@ def decode(string, base):
     code_string = get_code_string(base)
     result = 0
     if base == 256:
-        def extract(d):
+        def extract(d, cs):
             return d
     else:
         def extract(d, cs):

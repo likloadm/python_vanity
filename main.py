@@ -46,7 +46,7 @@ def decode(string, base):
     code_string = get_code_string(base)
     result = 0
     if base == 256:
-        def extract(d):
+        def extract(d, cs):
             return d
     else:
         def extract(d, cs):
@@ -56,7 +56,7 @@ def decode(string, base):
         string = string.lower()
     while len(string) > 0:
         result *= base
-        result += extract(string[0])
+        result += extract(string[0], code_string)
         string = string[1:]
     return result
 
@@ -331,6 +331,8 @@ if __name__ == '__main__':
     cpu_count = multiprocessing.cpu_count()
     parser = argparse.ArgumentParser(description=message)
 
+    parser.add_argument('-a', '--address', dest='address', default="", help='Address type, can be TDC or ARL [REQUIRED]',
+                        required=True)
     parser.add_argument('-s', '--started', dest='started', default="",
                         help='What should the address start with, for example, TYMAN for the Tidecoin or AREL for the Arielcoin')
     parser.add_argument('-c', '--contains', dest='contains', default="",
@@ -338,7 +340,6 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--threads', dest='threads', default=cpu_count, help='The number of threads involved in the search (your number cores by default)',
                         metavar="THREADS")
     parser.add_argument('-f', '--file', dest='file', default="", help='Output file')
-    parser.add_argument('-a', '--address', dest='address', default="", help='Address type, can be TDC or ARL', required=True)
 
 
 

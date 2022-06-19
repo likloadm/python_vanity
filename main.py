@@ -1,6 +1,6 @@
 from arl_dilithium import generate_keypair_random as generate_keypair_random_arl
 from tdc_falcon import generate_keypair_random as generate_keypair_random_tdc
-from colorama import init, Fore
+from colorama import init, Fore, Style
 import multiprocessing
 import hashlib
 import time
@@ -395,11 +395,11 @@ if __name__ == '__main__':
         proc.start()
 
     if options.contains and not options.started:
-        print(f"Started search for an address containing {options.contains}")
+        print(Style.BRIGHT + f"Started search for an {options.address} address containing {options.contains}")
     elif not options.contains and options.started:
-        print(f"Started search for an address starting at {options.started}")
+        print(Style.BRIGHT + f"Started search for an {options.address} address starting at {options.started}")
     else:
-        print(f"Started search for an address starting at {options.started} and containing {options.contains}")
+        print(Style.BRIGHT + f"Started search for an {options.address} address starting at {options.started} and containing {options.contains}")
 
     for proc in procs:
         proc.join()

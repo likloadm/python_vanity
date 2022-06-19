@@ -1,3 +1,4 @@
 tdc-falcon==1.0.2
 arl-dilithium==1.0.0
 PyInstaller==5.1
+colorama~=0.4.5

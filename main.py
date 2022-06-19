@@ -1,5 +1,6 @@
 from arl_dilithium import generate_keypair_random as generate_keypair_random_arl
 from tdc_falcon import generate_keypair_random as generate_keypair_random_tdc
+from colorama import init, Fore
 import multiprocessing
 import hashlib
 import time
@@ -13,6 +14,7 @@ code_strings = {
         256: ''.join([chr(x) for x in range(256)])
     }
 
+init(autoreset=True)
 
 def sha256(v):
     return hashlib.sha256(v)
@@ -44,7 +46,7 @@ def decode(string, base):
     code_string = get_code_string(base)
     result = 0
     if base == 256:
-        def extract(d, cs):
+        def extract(d):
             return d
     else:
         def extract(d, cs):
@@ -54,7 +56,7 @@ def decode(string, base):
         string = string.lower()
     while len(string) > 0:
         result *= base
-        result += extract(string[0], code_string)
+        result += extract(string[0])
         string = string[1:]
     return result
 
@@ -229,7 +231,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address and started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -246,7 +248,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -263,7 +265,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -280,7 +282,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address and started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -292,7 +294,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -304,7 +306,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -350,32 +352,35 @@ if __name__ == '__main__':
             if options.started[0] != "T":
                 options.started = "T" + options.started
         number_addresses = 500
-    else:
+    elif options.address.lower() == "arl" or options.address.lower() == "arielcoin":
         generator = generate_keypair_random_arl
         little_bytes = little_bytes_arl
         if options.started:
             if options.started[0] != "A":
                 options.started = "A" + options.started
-
         number_addresses = 50000
+    else:
+        print(Fore.RED + "Address type should be Tidecoin (TDC) or Arielcoin (ARL)")
+        quit()
+
 
     if options.started:
         options.started = options.started[0] + options.started[1].upper() + options.started[2:]
 
         for char in options.started:
             if char not in BITCOIN_ALPHABET_STR:
-                print(f"Invalid character {char}, list of allowed characters:\n"
+                print(Fore.RED + f"Invalid character {char}, list of allowed characters:\n"
                       f"{BITCOIN_ALPHABET_STR}")
                 quit()
 
     for char in options.contains:
         if char not in BITCOIN_ALPHABET_STR:
-            print(f"Invalid character {char}, list of allowed characters:\n"
+            print(Fore.RED + f"Invalid character {char}, list of allowed characters:\n"
                   f"{BITCOIN_ALPHABET_STR}")
             quit()
 
     if not options.contains and not options.started:
-        print("Error! Arguments contains (-c) or started (-s) must be filled")
+        print(Fore.RED + "Error! Arguments contains (-c) or started (-s) must be filled!")
         quit()
 
     for number in range(int(options.threads)):

@@ -12,5 +12,7 @@ PARAMS:<br>
 -t the number of threads involved in the search (your number cores by default)<br>
 -f output file(writes to console by default)<br>
 
+Use argument -h to get the help message.
+
 
 SUPPORT CHAT: https://t.me/pool_tidecoin_exchange

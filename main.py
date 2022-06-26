@@ -1,5 +1,6 @@
 from arl_dilithium import generate_keypair_random as generate_keypair_random_arl
 from tdc_falcon import generate_keypair_random as generate_keypair_random_tdc
+from colorama import init, Fore, Style
 import multiprocessing
 import hashlib
 import time
@@ -13,6 +14,7 @@ code_strings = {
         256: ''.join([chr(x) for x in range(256)])
     }
 
+init(autoreset=True)
 
 def sha256(v):
     return hashlib.sha256(v)
@@ -229,7 +231,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address and started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -246,7 +248,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -263,7 +265,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -280,7 +282,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address and started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -292,7 +294,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if contains in address:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -304,7 +306,7 @@ def gen_address(generator, contains,
                 address = _generate_publicaddress3(little_bytes_07 + public_key, little_bytes)
                 if started == address[:started_len]:
                     if file:
-                        print("New address found")
+                        print(Fore.GREEN + "New address found")
                         with open(f"{file}", "a") as f:
                             f.write(f"{address.decode('utf-8')}:{bin_to_b58check(secret_key + little_bytes_01 + public_key, 125)}\n")
                     else:
@@ -329,6 +331,8 @@ if __name__ == '__main__':
     cpu_count = multiprocessing.cpu_count()
     parser = argparse.ArgumentParser(description=message)
 
+    parser.add_argument('-a', '--address', dest='address', default="", help='Address type, can be TDC or ARL [REQUIRED]',
+                        required=True)
     parser.add_argument('-s', '--started', dest='started', default="",
                         help='What should the address start with, for example, TYMAN for the Tidecoin or AREL for the Arielcoin')
     parser.add_argument('-c', '--contains', dest='contains', default="",
@@ -336,7 +340,6 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--threads', dest='threads', default=cpu_count, help='The number of threads involved in the search (your number cores by default)',
                         metavar="THREADS")
     parser.add_argument('-f', '--file', dest='file', default="", help='Output file')
-    parser.add_argument('-a', '--address', dest='address', default="", help='Address type, can be TDC or ARL', required=True)
 
 
 
@@ -350,32 +353,34 @@ if __name__ == '__main__':
             if options.started[0] != "T":
                 options.started = "T" + options.started
         number_addresses = 500
-    else:
+    elif options.address.lower() == "arl" or options.address.lower() == "arielcoin":
         generator = generate_keypair_random_arl
         little_bytes = little_bytes_arl
         if options.started:
             if options.started[0] != "A":
                 options.started = "A" + options.started
-
         number_addresses = 50000
+    else:
+        raise argparse.ArgumentTypeError("Address type should be Tidecoin (TDC) or Arielcoin (ARL)")
+
 
     if options.started:
         options.started = options.started[0] + options.started[1].upper() + options.started[2:]
 
         for char in options.started:
             if char not in BITCOIN_ALPHABET_STR:
-                print(f"Invalid character {char}, list of allowed characters:\n"
+                print(Fore.RED + f"Invalid character {char}, list of allowed characters:\n"
                       f"{BITCOIN_ALPHABET_STR}")
                 quit()
 
     for char in options.contains:
         if char not in BITCOIN_ALPHABET_STR:
-            print(f"Invalid character {char}, list of allowed characters:\n"
+            print(Fore.RED + f"Invalid character {char}, list of allowed characters:\n"
                   f"{BITCOIN_ALPHABET_STR}")
             quit()
 
     if not options.contains and not options.started:
-        print("Error! Arguments contains (-c) or started (-s) must be filled")
+        print(Fore.RED + "Error! Arguments contains (-c) or started (-s) must be filled!")
         quit()
 
     for number in range(int(options.threads)):
@@ -389,11 +394,11 @@ if __name__ == '__main__':
         proc.start()
 
     if options.contains and not options.started:
-        print(f"Started search for an address containing {options.contains}")
+        print(Style.BRIGHT + f"Started search for an {options.address} address containing {options.contains}")
     elif not options.contains and options.started:
-        print(f"Started search for an address starting at {options.started}")
+        print(Style.BRIGHT + f"Started search for an {options.address} address starting at {options.started}")
     else:
-        print(f"Started search for an address starting at {options.started} and containing {options.contains}")
+        print(Style.BRIGHT + f"Started search for an {options.address} address starting at {options.started} and containing {options.contains}")
 
     for proc in procs:
         proc.join()

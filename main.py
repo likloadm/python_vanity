@@ -363,8 +363,10 @@ if __name__ == '__main__':
     else:
         raise argparse.ArgumentTypeError("Address type should be Tidecoin (TDC) or Arielcoin (ARL)")
 
-
     if options.started:
+        if len(options.started) <= 1:
+            print(Fore.RED + f"Low count characters started: {options.started}")
+            quit()
         options.started = options.started[0] + options.started[1].upper() + options.started[2:]
 
         for char in options.started:
